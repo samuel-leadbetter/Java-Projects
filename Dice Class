@@ -7,7 +7,7 @@ public class Dice {
     public int getNumFaces() {
         return numFaces;
     }
-    public int roll(int numFaces) {
-        return (int)(Math.random() * numFaces) + 1;
+    public int roll() {
+        return (int)(Math.random() * this.numFaces) + 1;
     }
 }
