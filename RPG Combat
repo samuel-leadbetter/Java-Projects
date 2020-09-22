@@ -1,0 +1,157 @@
+public class Main {
+    public static Enemy enemy = new Enemy();
+    public static void main(String[] args) {
+        System.out.println("You meet " + enemy.getName() + ", " + enemy.getDescription() + ".");
+        Combat.loop(enemy);
+    }
+}
+___________________________________________________________________________________________________________
+import java.util.Scanner;
+
+public class Combat {
+    public Combat() {
+    }
+
+    private static void calcAtk(Enemy enemy, int dmgMod) {
+        Dice hitDice = new Dice(10);
+            int dmg = calcDmg(dmgMod);
+            System.out.println("You hit " + enemy.getName() + " for " + dmg + " damage");
+            enemy.setHp(dmg);
+            if(enemy.getHp() < 0) {
+                System.out.println("You beat " + enemy.getName() + " to death.");
+            } else {
+                System.out.println(enemy.getName() + " has " + enemy.getHp() + "hp remaining");
+            }
+    }
+
+    private static void printSpace() {
+        for(int i = 0; i < 10; i++) {
+            System.out.println();
+        }
+    }
+
+    private static int calcDmg(int dmgMod) {
+        Dice atkMod = new Dice(10);
+        return atkMod.roll() + dmgMod;
+    }
+
+    private static void hitOrMiss(int chanceNum, int dmgMod, Enemy enemy) {
+        Dice hitDice = new Dice(10);
+        if(hitDice.roll() <= chanceNum) {
+            calcAtk(enemy, dmgMod);
+        } else {
+            System.out.println("Your strike hits thin air");
+        }
+    }
+
+    public static void loop(Enemy enemy) {
+        Scanner input = new Scanner(System.in);
+        while (enemy.getHp() > 0) {
+            System.out.println("Select your attack : ");
+            System.out.println("1) Jab (90% chance)");
+            System.out.println("2) Right Hook (70% chance)");
+            System.out.println("3) Uppercut (50% chance)");
+            int choice = input.nextInt();
+            printSpace();
+            if(choice > 0 && choice < 4) {
+            switch(choice) {
+                case 1:
+                    System.out.println("You throw a quick jab...");
+                    hitOrMiss(9, 5, enemy);
+                    break;
+                case 2:
+                    System.out.println("You wing a right hook...");
+                    hitOrMiss(7, 10, enemy);
+                    break;
+                case 3:
+                    System.out.println("You load up on a huge uppercut...");
+                    hitOrMiss(5, 20, enemy);
+                    break;
+            }
+            } else {
+                System.out.println("Incorrect choice, please try again");
+            }
+        }
+    }
+}
+_____________________________________________________________________________________________________________
+public class Enemy {
+    private int hp;
+    private int atkDmg;
+    private String name;
+    private String description;
+
+    public Enemy() {
+        this.hp = 100;
+        this.atkDmg = calcAtkDmg();
+        this.name = nameGen();
+        this.description = descGen(this.name);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+    public void setHp(int dmg) {
+        this.hp -= dmg;
+    }
+
+    public int getAtkDmg() {
+        return atkDmg;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    private int calcAtkDmg() {
+        Dice atkMod = new Dice(10);
+        return 10 + atkMod.roll();
+    }
+
+    private String nameGen() {
+        Dice nameRoll = new Dice(4);
+        switch(nameRoll.roll()) {
+            case 1:
+                return "Tom";
+            case 2:
+                return "Jim";
+            case 3:
+                return "Dave";
+            case 4:
+                return "Sally";
+        }
+        return "ERROR NO NAME";
+    }
+
+    private String descGen(String name) {
+        switch(name) {
+            case "Tom":
+                return "an avid lover of football and lager";
+            case "Jim":
+                return "an anti-vaxxer who works at ASDA";
+            case "Dave":
+                return "a painter with three kids";
+            case "Sally":
+                return "a nurse who can't stop eating poop";
+        }
+        return "ERROR NO DESCRIPTION";
+    }
+}
+___________________________________________________________________________________________________________
+public class Dice {
+    private int numFaces;
+
+    public Dice(int numFaces) {
+        this.numFaces = numFaces;
+    }
+    public int getNumFaces() {
+        return numFaces;
+    }
+    public int roll() {
+        return (int)(Math.random() * this.numFaces) + 1;
+    }
+}
